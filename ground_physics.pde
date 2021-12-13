@@ -34,8 +34,6 @@ void draw() {
   player_two.update(1);    
   player_one.render();
   player_two.render();
-  
-  println(player_one.pos);
 }
 
 void display() {
