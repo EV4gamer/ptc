@@ -2,25 +2,40 @@
 int[][] grid;
 inflictor object;
 ArrayList<inflictor> inflictors;
+boolean continuePhysics = true;
+vehicle player_one;
+vehicle player_two;
 
 void setup() {
-  size(2000, 900);
+  size(600, 600);
   initiateGround(100, 75);
-  inflictors = new ArrayList<inflictor>(); 
-  object = new inflictor(new PVector(width/2, height/2), new PVector(10, 1), 1, 50, 0, color(0, 0, 255), 50);;
-  
+  inflictors = new ArrayList<inflictor>();
+  player_one = new vehicle(new PVector(width / 5, 0), 10, color(0, 0, 200));
+  player_two = new vehicle(new PVector(4 * width / 5, 0), 10, color(200, 0, 0));
+
+  //object = new inflictor(new PVector(width/2, height/2), new PVector(10, 1), 1, 50, 0, color(0, 0, 255), 50);;
 }
 
 
 
 void draw() {
   display();
-  object.applyForce(new PVector(0.01, 0.1));
-  object.update(1);
-  object.render();
-  for (int s = 0; s < 2; s++) {
-    iterativeDown();
+  for (int i = 0; i < inflictors.size(); i++) {
+    inflictors.get(i).applyForce(new PVector(0, 0.1));
+    inflictors.get(i).update(1);
+    inflictors.get(i).render();
   }
+  if (continuePhysics) {
+    for (int s = 0; s < 2; s++) {
+      iterativeDown();
+    }
+  }
+  player_one.update(1);
+  player_two.update(1);    
+  player_one.render();
+  player_two.render();
+  
+  println(player_one.pos);
 }
 
 void display() {
@@ -36,11 +51,13 @@ void display() {
 
 
 void iterativeDown() {
+  continuePhysics = false;
   for (int x = 0; x < width; x++) {
     for (int y = height - 1; y > 0; y--) {
       if (grid[x][y - 1] != 0 && grid[x][y] == 0) { //if there is a free space to move to
         grid[x][y] = grid[x][y - 1]; //have the particle switch places with the empty place
         grid[x][y - 1] = 0;
+        continuePhysics = true;
       }
     }
   }
@@ -50,6 +67,7 @@ void mousePressed() {
   int r = 100;
   int c = (mouseButton == LEFT ? 0 : 1);
   sphere(mouseX, mouseY, r, c);
+  continuePhysics = true;
 }
 
 void sphere(int cx, int cy, int r, int col) {
@@ -99,13 +117,13 @@ void initiateGround(int smoothness, int variance) {
     for (int y = HF[x]; y < height; y++) {            
       if (y - HF[x] < 25) {
         grid[x][y] = 1;
-      } else if (y - HF[x] < 75){
+      } else if (y - HF[x] < 75) {
         grid[x][y] = 2;
-      } else if (y - HF[x] < 125){
+      } else if (y - HF[x] < 125) {
         grid[x][y] = 3;
       } else {
         grid[x][y] = 4;
-      }   
+      }
     }
   }
 }
