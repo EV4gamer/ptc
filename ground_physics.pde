@@ -1,25 +1,46 @@
 
 int[][] grid;
-inflictor object;
 ArrayList<inflictor> inflictors;
+ArrayList<vehicle> vehicles;
+ArrayList<button> buttons;
+
 boolean continuePhysics = true;
 vehicle player_one;
 vehicle player_two;
 
+int currentPlayerIndex = 0;
+int buttonHeight;
+
 void setup() {
-  size(600, 600);
-  initiateGround(100, 75);
+  size(1600, 900);
+  buttonHeight = height / 4;  
+  initiateGround(100, 75);  
+  initiateButtons(); 
+
   inflictors = new ArrayList<inflictor>();
-  player_one = new vehicle(new PVector(width / 5, 0), 10, color(0, 0, 200));
-  player_two = new vehicle(new PVector(4 * width / 5, 0), 10, color(200, 0, 0));
+  vehicles = new ArrayList<vehicle>();
+  buttons = new ArrayList<button>();
 
-  //object = new inflictor(new PVector(width/2, height/2), new PVector(10, 1), 1, 50, 0, color(0, 0, 255), 50);;
+  vehicle player_one = new vehicle(new PVector(width / 5, 0), 10, color(0, 0, 200));
+  vehicle player_two = new vehicle(new PVector(4 * width / 5, 0), 10, color(200, 0, 0));
+  vehicles.add(player_one);
+  vehicles.add(player_two);
+  player_one.active = true;  
+
+  buttons.add(new button(width / 2, (int)((7.0/8.0)* height), 250, 125, color(20, 20, 20), "TEST", 50));
+  
+  for (int i = 0; i < vehicles.size(); i++) { //check player index
+    if (vehicles.get(i).active == true) {
+      currentPlayerIndex = i;
+      break;
+    }
+  }  
 }
-
-
 
 void draw() {
   display();
+
+  //update shells
   for (int i = 0; i < inflictors.size(); i++) {
     inflictors.get(i).applyForce(new PVector(0, 0.1));
     inflictors.get(i).update(1);
@@ -30,98 +51,79 @@ void draw() {
       iterativeDown();
     }
   }
-  player_one.update(1);
-  player_two.update(1);    
-  player_one.render();
-  player_two.render();
-}
 
-void display() {
-  int background = -(1 << 24) + 20 * 256 * 256 + 20 * 256 + 20;
-  loadPixels();
-  for (int x = 0; x < width; x++) {
-    for (int y = 0; y < height; y++) {
-      pixels[x + y * width] = (grid[x][y] == 0 ?  background : -(1 << 24) + ((200 - (grid[x][y] - 1) * 30) << 8)); //green or black
+  //update players
+  for (int i = 0; i < vehicles.size(); i++) {
+    vehicles.get(i).update(1);
+    vehicles.get(i).render();
+  }
+
+  //update buttons
+  for (int i = 0; i < buttons.size(); i++) {
+    buttons.get(i).render();
+  }
+  
+  for (int i = 0; i < vehicles.size(); i++) {
+    if (i == currentPlayerIndex) {
+      vehicles.get(i).active = true;
+    } else {
+      vehicles.get(i).active = false;
     }
   }
-  updatePixels();
-}
-
-
-void iterativeDown() {
-  continuePhysics = false;
-  for (int x = 0; x < width; x++) {
-    for (int y = height - 1; y > 0; y--) {
-      if (grid[x][y - 1] != 0 && grid[x][y] == 0) { //if there is a free space to move to
-        grid[x][y] = grid[x][y - 1]; //have the particle switch places with the empty place
-        grid[x][y - 1] = 0;
-        continuePhysics = true;
-      }
-    }
-  }
+  
+  
 }
 
 void mousePressed() {
-  int r = 100;
-  int c = (mouseButton == LEFT ? 0 : 1);
-  sphere(mouseX, mouseY, r, c);
-  continuePhysics = true;
-}
+  //int r = 100;
+  //int c = (mouseButton == LEFT ? 0 : 1);
+  //sphere(mouseX, mouseY, r, c);
+  //continuePhysics = true;
 
-void sphere(int cx, int cy, int r, int col) {
-  for (int x = -r; x < r; x++) {
-    for (int y = -r; y < r; y++) {
-      if (x * x + y * y < r * r && cx + x < width && cx + x >= 0 && cy + y < height && cy + y >= 0) {
-        grid[cx + x][cy + y] = col;
-      }
-    }
-  }
-}
-
-void initiateGround(int smoothness, int variance) {
-  int groundClearance = 100;
-  int topClearance = 100;
-  grid = new int[width][height];
-
-  int level = height / 2 + (int)random(random(-variance, 0), random(0, variance));
-  int[] H = new int[width];   //initial line
-  int[] HF = new int[width];  //smoothed line
-
-  //save heights for each x value
-  for (int x = 0; x < width; x++) {
-    if (level > height - topClearance) {
-      level = height - topClearance;
-    }
-    if (level < groundClearance) {
-      level = groundClearance;
-    }
-    H[x] = level;
-
-    level += (int)random(random(-variance, 0), random(0, variance)); //crude gaussian
-  }
-
-  //average out the values based on neighbouring values
-  for (int x = 0; x < width; x++) {
-    int sum = 0;
-    for (int i = 0; i < smoothness; i++) {
-      int val = H[(x + i) % width];
-      sum += val;
-    }   
-    HF[x] = sum / smoothness;
-  }
-
-  //set grid based on values in HF
-  for (int x = 0; x < width; x++) {
-    for (int y = HF[x]; y < height; y++) {            
-      if (y - HF[x] < 25) {
-        grid[x][y] = 1;
-      } else if (y - HF[x] < 75) {
-        grid[x][y] = 2;
-      } else if (y - HF[x] < 125) {
-        grid[x][y] = 3;
+  for (int i = 0; i < buttons.size(); i++) {
+    button b = buttons.get(i);
+    if (mouseX > b.x - b.w && mouseX < b.x + b.w && mouseY > b.y - b.h && mouseY < b.y + b.h) { //if mouse in button hitbox
+      if (b.pressed == true) {
+        b.longPress = true;
       } else {
-        grid[x][y] = 4;
+        b.pressed = true;
       }
     }
+  }
+  
+  for (int i = 0; i < buttons.size(); i++) {
+    button b = buttons.get(i);
+    if(b.pressed == true){
+      currentPlayerIndex = (currentPlayerIndex + 1) % vehicles.size(); //next player's turn      
+    }
+  }
+}
+
+void mouseReleased() {
+  for (int i = 0; i < buttons.size(); i++) {
+    buttons.get(i).pressed = false;
+    buttons.get(i).longPress = false;
+  }
+}
+
+void keyPressed() {
+
+  switch(key) {
+  case 'w':
+    break;
+  case 'a':
+    if (vehicles.get(currentPlayerIndex).movesLeft > 0) {
+      vehicles.get(currentPlayerIndex).movesToTarget -= width / 20;
+      vehicles.get(currentPlayerIndex).movesLeft--;
+    }
+    break;
+  case 's':
+    break;
+  case 'd':
+    if (vehicles.get(currentPlayerIndex).movesLeft > 0) {
+      vehicles.get(currentPlayerIndex).movesToTarget += width / 20;
+      vehicles.get(currentPlayerIndex).movesLeft--;
+    }
+    break;
   }
 }
