@@ -12,7 +12,7 @@ int currentPlayerIndex = 0;
 int buttonHeight;
 
 void setup() {
-  size(1600, 900);
+  size(1000, 600);
   buttonHeight = height / 4;  
   initiateGround(100, 75);  
   initiateButtons(); 
@@ -28,13 +28,15 @@ void setup() {
   player_one.active = true;  
 
   buttons.add(new button(width / 2, (int)((7.0/8.0)* height), 250, 125, color(20, 20, 20), "TEST", 50));
+  buttons.add(new button(3 * width / 4, 7 * height / 8, 50, 50, color(20, 20, 20), "+", 50));
+  buttons.add(new button(3 * width / 4 + 100, 7 * height / 8, 50, 50, color(20, 20, 20), "-", 50));
   
   for (int i = 0; i < vehicles.size(); i++) { //check player index
     if (vehicles.get(i).active == true) {
       currentPlayerIndex = i;
       break;
     }
-  }  
+  }
 }
 
 void draw() {
@@ -46,6 +48,8 @@ void draw() {
     inflictors.get(i).update(1);
     inflictors.get(i).render();
   }
+  
+  //update ground
   if (continuePhysics) {
     for (int s = 0; s < 2; s++) {
       iterativeDown();
@@ -62,16 +66,17 @@ void draw() {
   for (int i = 0; i < buttons.size(); i++) {
     buttons.get(i).render();
   }
-  
-  for (int i = 0; i < vehicles.size(); i++) {
-    if (i == currentPlayerIndex) {
-      vehicles.get(i).active = true;
-    } else {
-      vehicles.get(i).active = false;
+
+  //set next player in the list to be the active one if currentindexed isnt active
+  if (vehicles.get(currentPlayerIndex).active != true) {
+    for (int i = 0; i < vehicles.size(); i++) {
+      if (i == currentPlayerIndex) {
+        vehicles.get(i).active = true;
+      } else {
+        vehicles.get(i).active = false;
+      }
     }
   }
-  
-  
 }
 
 void mousePressed() {
@@ -82,7 +87,7 @@ void mousePressed() {
 
   for (int i = 0; i < buttons.size(); i++) {
     button b = buttons.get(i);
-    if (mouseX > b.x - b.w && mouseX < b.x + b.w && mouseY > b.y - b.h && mouseY < b.y + b.h) { //if mouse in button hitbox
+    if (mouseX > b.x - b.w / 2 && mouseX < b.x + b.w / 2 && mouseY > b.y - b.h / 2 && mouseY < b.y + b.h / 2) { //if mouse in button hitbox
       if (b.pressed == true) {
         b.longPress = true;
       } else {
@@ -90,16 +95,38 @@ void mousePressed() {
       }
     }
   }
-  
-  for (int i = 0; i < buttons.size(); i++) {
-    button b = buttons.get(i);
-    if(b.pressed == true){
-      currentPlayerIndex = (currentPlayerIndex + 1) % vehicles.size(); //next player's turn      
-    }
-  }
+
+  //for (int i = 0; i < buttons.size(); i++) {
+  //  button b = buttons.get(i);
+  //  if (b.pressed == true) {
+  //    currentPlayerIndex = (currentPlayerIndex + 1) % vehicles.size(); //next player's turn
+  //  }
+  //}
 }
 
 void mouseReleased() {
+  for (int i = 0; i < buttons.size(); i++) {
+    if(buttons.get(i).pressed == true){
+      
+      //do the action the button is related to
+      switch(i){
+        case 0:
+        println("test b1");
+        //currentPlayerIndex = (currentPlayerIndex + 1) % vehicles.size(); //next player's turn
+          break;
+        case 1:
+          println("test b2");
+          vehicles.get(currentPlayerIndex).angle += TWO_PI / 36;
+          break;
+        case 2:
+        println("test b3");
+          vehicles.get(currentPlayerIndex).angle -= TWO_PI / 36;
+          break;
+      }
+    }
+  }
+  
+  //reset all buttons to false;
   for (int i = 0; i < buttons.size(); i++) {
     buttons.get(i).pressed = false;
     buttons.get(i).longPress = false;
