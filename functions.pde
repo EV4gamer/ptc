@@ -1,5 +1,5 @@
 
-
+//display the ground grid
 void display() {
   loadPixels();
   for (int x = 0; x < width; x++) {
@@ -29,10 +29,12 @@ void display() {
   updatePixels();
 }
 
+//fast color()
 int qrgb(int r, int g, int b) {
   return -(1 << 24) + (r << 16) + (g << 8) + b;
 }
 
+//2D random terrain generation
 void initiateGround(int smoothness, int variance) {
   int groundClearance = 100;
   int topClearance = buttonHeight;
@@ -76,6 +78,7 @@ void initiateGround(int smoothness, int variance) {
   }
 }
 
+//initiate button layer
 void initiateButtons() {
   for (int x = 0; x < width; x++) {
     for (int y = height - buttonHeight; y < height; y++) {
@@ -84,6 +87,7 @@ void initiateButtons() {
   }
 }
 
+//apply physics to ground grid
 void iterativeDown() {
   continuePhysics = false;
   for (int x = 0; x < width; x++) {
@@ -97,6 +101,7 @@ void iterativeDown() {
   }
 }
 
+//sphere placing function
 void sphere(int cx, int cy, int r, int col) {
   for (int x = -r; x < r; x++) {
     for (int y = -r; y < r; y++) {
@@ -107,6 +112,7 @@ void sphere(int cx, int cy, int r, int col) {
   }
 }
 
+//limit x between a and b
 int limit(int x, int a, int b) {
   if (x < a) {
     return a;
