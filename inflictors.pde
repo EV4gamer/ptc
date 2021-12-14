@@ -11,6 +11,9 @@ class inflictor {
   color col;
   int TRAIL_LENGTH;
   ArrayList<PVector> trail;
+  
+  boolean purge;
+  
 
   inflictor(PVector p, PVector v, float m, float r, float ar, color c, int tl) {
     pos = p;
@@ -25,8 +28,9 @@ class inflictor {
     for (int i = 0; i < TRAIL_LENGTH; i++) {
       trail.add(pos.copy());
     }
+    purge = false;
   }
-
+  
   void applyForce(PVector f) {
     acc.add(f.div(mass));
   }
