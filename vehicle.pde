@@ -11,6 +11,7 @@ class vehicle {
   int movesToTarget;
 
   float angle;
+  int power;
   color col;
 
   vehicle(PVector p, float m, color c) {
@@ -29,6 +30,7 @@ class vehicle {
     movesLeft = 5;
     healthLeft = 100;
     angle = 0;
+    power = 50;
     movesToTarget = 0;
     active = false;
   }
