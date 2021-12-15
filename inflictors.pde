@@ -12,8 +12,8 @@ class inflictor {
   int TRAIL_LENGTH;
   ArrayList<PVector> trail;
   
-  boolean purge;
-  
+  boolean purge = false;
+  boolean offscreen = false;
 
   inflictor(PVector p, PVector v, float m, float r, float ar, color c, int tl) {
     pos = p;
@@ -28,7 +28,6 @@ class inflictor {
     for (int i = 0; i < TRAIL_LENGTH; i++) {
       trail.add(pos.copy());
     }
-    purge = false;
   }
   
   void applyForce(PVector f) {
