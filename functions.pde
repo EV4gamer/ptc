@@ -122,3 +122,12 @@ int limit(int x, int a, int b) {
     return x;
   }
 }
+
+void addInflictor(String type) {
+  switch(type) {
+  case "":
+    break;
+  default:
+    break;
+  }
+}
