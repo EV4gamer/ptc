@@ -7,7 +7,7 @@ class vehicle {
   float mass;
 
   int movesLeft;
-  int healthLeft;
+  int score;
   int movesToTarget;
 
   float angle;
@@ -28,7 +28,7 @@ class vehicle {
     mass = m;
     col = c;
     movesLeft = 5;
-    healthLeft = 100;
+    score = 0;
     angle = 0;
     power = 50;
     movesToTarget = 0;
@@ -39,10 +39,23 @@ class vehicle {
     acc.add(f.div(mass));
   }
 
-  void update(float fac) {
-    if (acc.mag() > 0 || vel.mag() > 0) {
-      vel.add(PVector.mult(acc, fac));
-      pos.add(PVector.mult(vel, fac));
+  void update(float fac) {    
+    vel.add(PVector.mult(acc, fac));
+    pos.add(PVector.mult(vel, fac));
+    if (acc.mag() > 0 || vel.mag() > 0) {      
+      if ((int)pos.y < height -1 && (int)pos.y > 0) {
+        if((int)pos.x < 0 || (int)pos.x > width - 1){ //bounce in width
+          vel.x = - vel.x;
+          pos.x = limit((int)pos.x, 0, width - 1);
+        }
+        
+        if (grid[(int)pos.x][(int)pos.y + 1] != 0) { //bounce in height
+          vel.y = -abs(vel.y);
+        }
+      } else {
+        pos.y = limit((int)pos.y, 0, height - 1);
+        vel.y = -vel.y;
+      }       
       acc.mult(0);
     } else if ((int)pos.y + 1 < height) {
       if (grid[(int)pos.x][(int)pos.y + 1] == 0) { //if pixel below is void, move towards it
