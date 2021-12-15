@@ -48,9 +48,9 @@ void setup() {
   signs.add(new sign(7 * width / 8 + 30, height - buttonHeight / 2 - 40, 0, 0, color(50), "Power", 30, 0, color(255)));
   signs.add(new sign(6 * width / 8 + 30, height - buttonHeight / 2 - 17, 114, 30, color(20), "0", 30, 11, color(255)));
   signs.add(new sign(7 * width / 8 + 30, height - buttonHeight / 2 - 17, 114, 30, color(20), "0", 30, 11, color(255)));
-  
+
   signs.add(new sign(0, 35, 20, 20, color(255), " ", 1, 0, color(0)));
-  
+
   for (int i = 0; i < vehicles.size(); i++) { //check player index
     if (vehicles.get(i).active == true) {
       currentPlayerIndex = i;
@@ -93,14 +93,14 @@ void draw() {
   for (int i = 0; i < signs.size(); i++) {
     signs.get(i).render();
   }
-  signs.get(2).text = str(vehicles.get(0).healthLeft); //move these lines to when health is updated instead of here
-  signs.get(3).text = str(vehicles.get(1).healthLeft);
+  signs.get(2).text = str(vehicles.get(0).score); //move these lines to when health is updated instead of here
+  signs.get(3).text = str(vehicles.get(1).score);
   signs.get(4).text = "Moves\n"+str(vehicles.get(currentPlayerIndex).movesLeft);
   signs.get(7).text = str((int)(vehicles.get(currentPlayerIndex).angle / TWO_PI * 360));
   signs.get(8).text = str(vehicles.get(currentPlayerIndex).power);
-  
+
   signs.get(9).x = (currentPlayerIndex == 0 ? 250 : width - 250);
-   
+
   //set next player in the list to be the active one if currentindexed isnt active
   if (vehicles.get(currentPlayerIndex).active != true) {
     for (int i = 0; i < vehicles.size(); i++) {
@@ -112,14 +112,17 @@ void draw() {
     }
   }
 
-  
-
   //purge inflictors when flagged or outside of screen
   if (inflictors.size() > 0) {
     for (int i = inflictors.size() - 1; i >= 0; i--) {
       inflictor infl = inflictors.get(i);
-      if ((int)infl.pos.x < 0 || (int)infl.pos.x > width - 1 || (int)infl.pos.y < 0 || (int)infl.pos.y > height - 1) {
-        inflictors.get(i).purge = true;
+      if ((int)infl.pos.x < 0 || (int)infl.pos.x > width - 1 || (int)infl.pos.y > height - 1) {
+        infl.purge = true;
+      }
+      if((int)infl.pos.y < 0){
+        infl.offscreen = true;
+      } else {
+        infl.offscreen = false;
       }
     }
     for (int i = inflictors.size() - 1; i >= 0; i--) {
@@ -128,18 +131,39 @@ void draw() {
       }
     }
   }
-  
-  //check inflictor collision with ground
+
+  //check inflictor collision
   if (inflictors.size() > 0) {
     for (int i = inflictors.size() - 1; i >= 0; i--) {
       inflictor infl = inflictors.get(i);
-      if (grid[(int)infl.pos.x][(int)infl.pos.y] != 0) {
-        inflictors.get(i).purge = true;
-        sphere((int)infl.pos.x, (int)infl.pos.y, (int)infl.aoe, 0);
-        continuePhysics = true;
+      if (infl.offscreen == false) {
+        //ground collision test
+        if (grid[(int)infl.pos.x][(int)infl.pos.y] != 0) {
+          infl.purge = true;
+          sphere((int)infl.pos.x, (int)infl.pos.y, (int)infl.aoe, 0);
+          continuePhysics = true;
+        }
+        
+        //vehicle collision test
+        for(int j = 0; j < vehicles.size(); j ++){          
+          if(j != currentPlayerIndex){
+            vehicle v = vehicles.get(j);
+            if((int)infl.pos.x > (int)v.pos.x - 40 && (int)infl.pos.x < (int)v.pos.x + 40){ //within width of the player
+              if((int)infl.pos.y < (int)v.pos.y && (int)infl.pos.y > (int)v.pos.y - 70){ //within height of the player
+                infl.purge = true;
+                sphere((int)infl.pos.x, (int)infl.pos.y, (int)infl.aoe, 0);
+                continuePhysics = true;
+                vehicles.get(currentPlayerIndex).score += 10;
+                //v.applyForce(new PVector(infl.vel.x, -abs(infl.vel.y)).mult(10)); //fix the impact force, doesnt work
+              }
+            }
+          }
+        }
+        
+        
       }
     }
-  } 
+  }
 }
 
 void mousePressed() {
@@ -169,7 +193,7 @@ void mouseReleased() {
       case 0: //Fire button       
         inflictor shell = new inflictor(new PVector(x + 100 * cos(a), y - 55 - 100 * sin(a)), new PVector(cos(a), sin(-a)).mult(p).div(10), 10, 10, 10, color(255), 100);
         inflictors.add(shell);
-        currentPlayerIndex = (currentPlayerIndex + 1) % vehicles.size();
+        //currentPlayerIndex = (currentPlayerIndex + 1) % vehicles.size();
         break;
       case 1:
         vehicles.get(currentPlayerIndex).angle += TWO_PI / 36;
