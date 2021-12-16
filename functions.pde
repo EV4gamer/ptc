@@ -8,16 +8,18 @@ void display() {
       int colour;
       switch(type) {
       case 0:
-        colour = qrgb(20, 20, 20);
+        colour = qrgb(20, 20, 20); //void
         break;
       case 1:
       case 2:
       case 3:
       case 4:
-        colour = qrgb(0, 200 - (type - 1) * 30, 0);
+        colour = qrgb(0, 200 - (type - 1) * 30, 0); //the greens
         break;
+      case 10:
+        colour = qrgb(101, 67, 33); //dirt brown
       case 100:
-        colour = qrgb(50, 50, 50);
+        colour = qrgb(50, 50, 50); //button area
         break;
       default:
         colour = qrgb(255, 255, 255);
@@ -123,11 +125,42 @@ int limit(int x, int a, int b) {
   }
 }
 
-void addInflictor(String type) {
+void addInflictor(String type){//, float angle) {
+  float a = vehicles.get(currentPlayerIndex).angle;
+  float x = vehicles.get(currentPlayerIndex).pos.x + 100 * cos(a);
+  float y = vehicles.get(currentPlayerIndex).pos.y - 55 - 100 * sin(a); 
+  float p = vehicles.get(currentPlayerIndex).power;
+  float deg = TWO_PI / 360.0;
+  
+  //inflictor(P(x, y), P(vx, vy), mass, radius, aoeRadius, color, trailLength, filltype)
   switch(type) {
-  case "":
+  case "single shot":
+    //inflictors.add(new inflictor(pos, vel, 10, 10, 10, color(255), 100, 0));
     break;
-  default:
+  case "big shot":
+    //inflictors.add(new inflictor(pos, vel, 25, 10, 50, color(255), 100, 0));
+    break;
+  case "3 shot":
+    for(int i = 0; i < 3; i++){
+      inflictors.add(new inflictor(new PVector(x, y), new PVector(cos(vehicles.get(currentPlayerIndex).angle + (i-1) * 5 * deg), sin(-(vehicles.get(currentPlayerIndex).angle + (i-1) * 5 * deg))).mult(p).div(10), 9, 9, 9, color(255), 100, 0));
+    }
+    break;
+  case "5 shot":
+    for(int i = 0; i < 5; i++){
+      inflictors.add(new inflictor(new PVector(x, y), new PVector(cos(vehicles.get(currentPlayerIndex).angle + (i-2) * 4 * deg), sin(-(vehicles.get(currentPlayerIndex).angle + (i-2) * 4 * deg))).mult(p).div(10), 9, 9, 9, color(255), 100, 0));
+    }
+    break;
+  case "sniper":
+    //inflictors.add(new inflictor(pos, vel, 10, 4, 2, color(200), 100, 0));
+    break;
+  case "dirtball":
+    //inflictors.add(new inflictor(pos, vel, 10, 10, 100, color(255), 100, 10));
+    break;
+  case "tommy gun":
+    for (int i = 0; i < 25; i++) {
+      float chaos = TWO_PI * random(-10, 10) / 360.0;
+      inflictors.add(new inflictor(new PVector(x, y), new PVector(cos(vehicles.get(currentPlayerIndex).angle + chaos), sin(-(vehicles.get(currentPlayerIndex).angle + chaos))).mult(p).div(10).mult(random(0.9, 1.1)), 10, 4, 2, color(240, 240, 0), 10, 0));
+    }
     break;
   }
 }
