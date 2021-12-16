@@ -7,7 +7,8 @@ class inflictor {
   float mass;
   float radius;
   float aoe;
-
+  int fillType;
+  
   color col;
   int TRAIL_LENGTH;
   ArrayList<PVector> trail;
@@ -15,7 +16,7 @@ class inflictor {
   boolean purge = false;
   boolean offscreen = false;
 
-  inflictor(PVector p, PVector v, float m, float r, float ar, color c, int tl) {
+  inflictor(PVector p, PVector v, float m, float r, float ar, color c, int tl, int ft) {
     pos = p;
     vel = v;
     radius = r;
@@ -24,6 +25,7 @@ class inflictor {
     col = c;
     aoe = ar;
     TRAIL_LENGTH = tl;
+    fillType = ft;
     trail = new ArrayList<PVector>();
     for (int i = 0; i < TRAIL_LENGTH; i++) {
       trail.add(pos.copy());
@@ -56,7 +58,7 @@ class inflictor {
     for (int i = 0; i < trail.size(); i++) {
       PVector pb = trail.get(i);
       stroke(col, map(i, 0, trail.size(), 0, 200));
-      strokeWeight(map(i, 0, trail.size(), 0, radius /3));
+      strokeWeight(map(i, 0, trail.size(), 0, radius / 4));
       curveVertex(pb.x, pb.y);
     }
     endShape();
