@@ -68,6 +68,7 @@ void draw() {
       inflictors.get(i).applyForce(new PVector(0, 1));
       inflictors.get(i).update(1.0 / physPerFrame);
       inflictors.get(i).render();
+      println(inflictors.get(i).vel.y);
     }
   }
 
@@ -151,7 +152,7 @@ void draw() {
             if((int)infl.pos.x > (int)v.pos.x - 40 && (int)infl.pos.x < (int)v.pos.x + 40){ //within width of the player
               if((int)infl.pos.y < (int)v.pos.y && (int)infl.pos.y > (int)v.pos.y - 70){ //within height of the player
                 infl.purge = true;
-                sphere((int)infl.pos.x, (int)infl.pos.y, (int)infl.aoe, 0);
+                sphere((int)infl.pos.x, (int)infl.pos.y, (int)infl.aoe, infl.fillType);
                 continuePhysics = true;
                 vehicles.get(currentPlayerIndex).score += 10;
                 //v.applyForce(new PVector(infl.vel.x, -abs(infl.vel.y)).mult(10)); //fix the impact force, doesnt work
@@ -179,27 +180,22 @@ void mousePressed() {
   }
 }
 
-void mouseReleased() {
-  float x = vehicles.get(currentPlayerIndex).pos.x;
-  float y = vehicles.get(currentPlayerIndex).pos.y;
-  float a = vehicles.get(currentPlayerIndex).angle;
-  float p = vehicles.get(currentPlayerIndex).power;
-
+void mouseReleased() {  
   for (int i = 0; i < buttons.size(); i++) {
     if (buttons.get(i).pressed == true) {
 
       //do the action the button is related to
       switch(i) {
-      case 0: //Fire button       
-        inflictor shell = new inflictor(new PVector(x + 100 * cos(a), y - 55 - 100 * sin(a)), new PVector(cos(a), sin(-a)).mult(p).div(10), 10, 10, 10, color(255), 100);
-        inflictors.add(shell);
+      case 0: //Fire button  
+        addInflictor("tommy gun");  
+        
         //currentPlayerIndex = (currentPlayerIndex + 1) % vehicles.size();
         break;
       case 1:
-        vehicles.get(currentPlayerIndex).angle += TWO_PI / 36;
+        vehicles.get(currentPlayerIndex).angle += TWO_PI / 36.0;
         break;
       case 2:
-        vehicles.get(currentPlayerIndex).angle -= TWO_PI / 36;
+        vehicles.get(currentPlayerIndex).angle -= TWO_PI / 36.0;
         break;
       case 3:
         vehicles.get(currentPlayerIndex).power++;
