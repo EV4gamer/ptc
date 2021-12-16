@@ -6,14 +6,16 @@ class vehicle {
   PVector acc;
   float mass;
 
-  int movesLeft;
-  int score;
-  int movesToTarget;
+  int movesLeft = 5;
+  int score = 0;
+  int movesToTarget = 0;
 
-  float angle;
-  int power;
+  float angle = 0;
+  int power = 50;
   color col;
-
+  
+  String selectedInflictor = "default";
+  
   vehicle(PVector p, float m, color c) {
     pos = p;
     //if spawned above ground, move down
@@ -27,11 +29,6 @@ class vehicle {
     acc = new PVector(0, 0);
     mass = m;
     col = c;
-    movesLeft = 5;
-    score = 0;
-    angle = 0;
-    power = 50;
-    movesToTarget = 0;
     active = false;
   }
 
