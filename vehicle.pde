@@ -5,7 +5,10 @@ class vehicle {
   PVector vel;
   PVector acc;
   float mass;
-
+  
+  int boreLength = 80;
+  int w = 80;
+  int h = 15;
   int movesLeft = 5;
   int score = 0;
   int movesToTarget = 0;
@@ -14,7 +17,8 @@ class vehicle {
   int power = 50;
   color col;
   
-  String selectedInflictor = "default";
+  String selectedInflictorName = "default";
+  ArrayList<String> inflictorsLeft = new ArrayList<String>();
   
   vehicle(PVector p, float m, color c) {
     pos = p;
@@ -93,19 +97,27 @@ class vehicle {
   }
 
   void render() {
-    set((int)pos.x, (int)pos.y, color(0));
-    for (int x = - 40; x < 40; x++) {
-      for (int y = - 50; y < 0; y++) {
-        set((int)pos.x + x, (int)pos.y + y, col);
-      }
-    }
-
-    fill(col);
+    int wheelw = 20;  
+    set((int)pos.x, (int)pos.y, color(0)); //debug pos marker
     noStroke();
-    ellipse(pos.x, pos.y - 50, 50, 50);
-
+    fill(col);
+    rectMode(CENTER);
+    rect(pos.x, pos.y - h/2, w, h);
+        
     stroke(255);
     strokeWeight(5);
-    line(pos.x, pos.y - 55, pos.x + 100 * cos(angle), pos.y - 55 - 100 * sin(angle));
+    line(pos.x, pos.y - h - 5, pos.x + boreLength * cos(angle), pos.y - h - 5 - boreLength * sin(angle));
+        
+    fill(col);
+    noStroke();
+    ellipse(pos.x, pos.y - h, 50, 30);
+    
+    fill(col + qrgb(30, 30, 30));
+    noStroke();
+    for(int i = 0; i < w / wheelw - 1; i++){
+      ellipse(pos.x - 3 * w / 8 + (i + 1.0/2.0) * wheelw, pos.y, wheelw, wheelw);
+    }
+    ellipse(pos.x - w / 2 + wheelw/4, pos.y, wheelw/2, wheelw/2);
+    ellipse(pos.x + w / 2 - wheelw/4, pos.y, wheelw/2, wheelw/2);
   }
 }
