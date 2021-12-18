@@ -29,8 +29,9 @@ void setup() {
   shotsPerLaunch = 1;
   currentShots = 0;
 
-  size(1600, 900);
-
+  size(1920, 1080);
+  //fullScreen();
+  
   initiateGround(100, 75);  
   initiateButtons(); 
   nameList = new StringList();
@@ -202,8 +203,12 @@ void draw() {
     textAlign(CENTER);
     textSize(100);
     fill(255);
-    text("Game Name", width / 2, height / 4);
-
+    text("Pocket Tanks", width / 2, height / 4);
+    textSize(7);    
+    text("Don't sue me", width / 2, height / 4 + 30);
+    textSize(40);
+    text("By: EV4", width - 100, height - 50);
+    
     drawVehicle(width / 8, height / 2, 0.05, qrgb(0, 200, 0), -PI/12, 1.5);
     drawVehicle(width / 4, height / 2, 0.05, qrgb(200, 0, 0), -PI/12, 2);
     drawVehicle(3 * width / 4, height / 2, PI - 0.05, qrgb(0, 0, 200), PI/12, 2);
@@ -219,7 +224,14 @@ void draw() {
     rect(4 * width / 5, height / 2, width / 4 - 50, height / 2);
     stroke(200);
     rect(width / 2, height / 2, width / 4 - 50, height / 2);
-
+    
+    fill(vehicles.get(0).col);
+    textSize(70);
+    text("Player 1", width / 5, height / 2 - width / 4 + 150);
+    
+    fill(vehicles.get(1).col);
+    text("Player 2", 4 * width / 5, height / 2 - width / 4 + 150);
+    
     stroke(255);
     fill(255);
     rect((7 + 6 * currentPlayerIndex) * width / 20, height / 2, 50, 50); //selector indicator;
