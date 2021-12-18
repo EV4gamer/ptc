@@ -176,6 +176,72 @@ void addInflictor(String type) {//, float angle) {
   }
 }
 
+
+boolean isCollision(int x, int y, PVector p, int radius, int w, int h) {
+  if ((x + w - p.x) * (x + w - p.x) + (y + h - p.y) * (y + h - p.y) < radius * radius || (x - w - p.x) * (x - w - p.x) + (y + h - p.y) * (y + h - p.y) < radius * radius || (x - w - p.x) * (x - w - p.x) + (y - h - p.y) * (y - h - p.y) < radius * radius || (x + w - p.x) * (x + w - p.x) + (y - h - p.y) * (y - h - p.y) < radius * radius) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+//change this to a preset arraylist, to save on code
+int getDamage(boolean aoe, String type) {
+  int damage = 0;
+  switch(type) {
+  case "single shot":
+    if (aoe) {
+      damage = 10;
+    } else {
+      damage = 10;
+    }
+    break;
+  case "big shot":
+    if (aoe) {
+      damage = 10;
+    } else {
+      damage = 20;
+    }
+    break;
+  case "3 shot":
+    if (aoe) {
+      damage = 10;
+    } else {
+      damage = 10;
+    }
+    break;
+  case "5 shot":
+    if (aoe) {
+      damage = 10;
+    } else {
+      damage = 10;
+    }
+    break;
+  case "sniper":
+    if (aoe) {
+      damage = 0;
+    } else {
+      damage = 100;
+    }
+    break;
+  case "dirtball":
+    if (aoe) {
+      damage = 0;
+    } else {
+      damage = 10;
+    }
+    break;
+  case "tommy gun":
+    if (aoe) {
+      damage = 0;
+    } else {
+      damage = 5;
+    }
+    break;
+  }
+  return damage;
+}
+
 //intro screen vehicle draw function
 void drawVehicle(int x, int y, float angle, color col, float rot, float scale) {
   int wheelw = (int)(20 * scale);
@@ -243,7 +309,7 @@ void initializeIntroButtons() {
 void initializeInflictorSelectionButtons() {
 }
 
-void initializeEndOfGameButtons(){
+void initializeEndOfGameButtons() {
   buttons.add(new button(width / 2 - 150, height/2 + 100, 250, 125, qrgb(255, 255, 255), qrgb(20, 20, 20), "Restart", 50, 20));
   buttons.add(new button(width / 2 + 150, height/2 + 100, 250, 125, qrgb(255, 255, 255), qrgb(20, 20, 20), "Quit", 50, 20));
 }
