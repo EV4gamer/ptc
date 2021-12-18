@@ -6,8 +6,10 @@ class inflictor {
 
   float mass;
   float radius;
-  float aoe;
-  int fillType;
+  float aoe;  
+  int damage;
+  int aoeDamage;
+  int fillType;    
   
   color col;
   int TRAIL_LENGTH;
@@ -16,7 +18,7 @@ class inflictor {
   boolean purge = false;
   boolean offscreen = false;
 
-  inflictor(PVector p, PVector v, float m, float r, float ar, color c, int tl, int ft) {
+  inflictor(PVector p, PVector v, float m, float r, float ar, color c, int tl, int ft, int d, int ad) {
     pos = p;
     vel = v;
     radius = r;
@@ -26,6 +28,8 @@ class inflictor {
     aoe = ar;
     TRAIL_LENGTH = tl;
     fillType = ft;
+    damage = d;
+    aoeDamage = ad;
     trail = new ArrayList<PVector>();
     for (int i = 0; i < TRAIL_LENGTH; i++) {
       trail.add(pos.copy());
@@ -33,7 +37,7 @@ class inflictor {
   }
   
   void applyForce(PVector f) {
-    acc.add(f.div(mass));
+    acc.add(f.div(10));
   }
 
   void update(float fac) {
