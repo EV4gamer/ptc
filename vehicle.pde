@@ -102,7 +102,7 @@ class vehicle {
     noStroke();
     fill(col);
     rectMode(CENTER);
-    rect(pos.x, pos.y - h/2, w, h);
+    rect(pos.x, pos.y - h/2, w, h, w/8, w/8, w/12, w/12);
         
     stroke(255);
     strokeWeight(5);
