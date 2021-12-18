@@ -253,7 +253,7 @@ void drawVehicle(int x, int y, float angle, color col, float rot, float scale) {
   noStroke();
   fill(col);
   rectMode(CENTER);
-  rect(0, - h/2, w, h);        
+  rect(0, - h/2, w, h, w/8, w/8, w/12, w/12);        
   stroke(255);
   strokeWeight(5 * scale);
   line(0, -h - 5, boreLength * cos(angle), -h - 5 - boreLength * sin(angle));        
