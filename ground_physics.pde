@@ -8,7 +8,7 @@ ArrayList<String> leftForSelection;
 
 StringList nameList;
 
-boolean continuePhysics;;
+boolean continuePhysics;
 String currentScene;
 vehicle player_one;
 vehicle player_two;
@@ -22,7 +22,7 @@ int currentShots;
 void setup() {
   continuePhysics = true;
   currentScene = "Intro Scene";
-  
+
   currentPlayerIndex = 0;
   buttonHeight = height / 5;
   physPerFrame = 5;
@@ -155,18 +155,21 @@ void draw() {
             infl.purge = true;
             sphere((int)infl.pos.x, (int)infl.pos.y, (int)infl.aoe, infl.fillType);
             continuePhysics = true;
+            if (isCollision((int)infl.pos.x, (int)infl.pos.y, vehicles.get((currentPlayerIndex + 1) % vehicles.size()).pos, (int)infl.aoe, vehicles.get((currentPlayerIndex + 1) % vehicles.size()).w, vehicles.get((currentPlayerIndex + 1) % vehicles.size()).h)) { //if inflictor aoe hit enemy player
+              vehicles.get(currentPlayerIndex).score += getDamage(true, vehicles.get(currentPlayerIndex).selectedInflictorName); //add the score equal to aoe damage
+            }
           }
 
           //vehicle collision test
           for (int j = 0; j < vehicles.size(); j ++) {          
             if (j != currentPlayerIndex) {
               vehicle v = vehicles.get(j);
-              if ((int)infl.pos.x > (int)v.pos.x - v.w/2 + infl.aoe && (int)infl.pos.x < (int)v.pos.x + v.w/2 - infl.aoe) { //within width of the player
-                if ((int)infl.pos.y < (int)v.pos.y - infl.aoe && (int)infl.pos.y > (int)v.pos.y - v.h/2 + infl.aoe) { //within height of the player
+              if ((int)infl.pos.x > (int)v.pos.x - v.w/2 - infl.radius && (int)infl.pos.x < (int)v.pos.x + v.w/2 + infl.radius) { //within width of the player
+                if ((int)infl.pos.y < (int)v.pos.y + infl.radius && (int)infl.pos.y > (int)v.pos.y - v.h - infl.radius) { //within height of the player
                   infl.purge = true;
                   sphere((int)infl.pos.x, (int)infl.pos.y, (int)infl.aoe, infl.fillType);
                   continuePhysics = true;
-                  //vehicles.get(currentPlayerIndex).score += vehicles.get(currentPlayerIndex).inflictorsLeft.get(vehicles.get(currentPlayerIndex).selectedInflictor).damage; //add the score equal to the currently selected inflictor's damage DOESNT WORK PLZ FIX
+                  vehicles.get(currentPlayerIndex).score += getDamage(false, vehicles.get(currentPlayerIndex).selectedInflictorName); //add the score equal to non-aoe damage
                   signs.get(currentPlayerIndex + 2).text = str(vehicles.get(currentPlayerIndex).score); //update score sign
                   //v.applyForce(new PVector(infl.vel.x, -abs(infl.vel.y)).mult(10)); //fix the impact force, doesnt work
                 }
@@ -404,7 +407,6 @@ void mouseReleased() {
       }
     }
   } else if (currentScene == "End of Game") {
-    println("yep");
     for (int i = 0; i < buttons.size(); i++) {
       if (buttons.get(i).pressed == true) {
         //do the action the button is related to
