@@ -3,11 +3,14 @@ class button {
   int x, y, w, h;
   boolean pressed;
   boolean longPress;
+  boolean show = true;
   color buttoncol;
   color textcol;
   String text;
   int textSize;
   int textpos;
+  boolean stroke = true;
+  boolean isSwitch = false;
 
   button(int x1, int y1, int w1, int h1, color tc, color bc, String t, int ts, int ty) {
     x = x1;
@@ -25,7 +28,9 @@ class button {
 
   void render() {
     rectMode(CENTER);
-    stroke(0);
+    if (stroke == true) {
+      stroke(0);
+    }
     fill(pressed ? limit(buttoncol + 20, 0, 255) : buttoncol);
     rect(x, y, w, h);
     fill(textcol);
@@ -42,7 +47,7 @@ class sign {
   int textSize;
   int textpos;
   color textcol;
-  
+
   sign(int x1, int y1, int w1, int h1, color c, String t, int ts, int ty, color tc) {
     x = x1;
     y = y1;
@@ -54,8 +59,8 @@ class sign {
     textpos = ty;
     textcol = tc;
   }
-  
-  void render(){
+
+  void render() {
     noStroke();
     rectMode(CENTER);
     textAlign(CENTER);
@@ -64,7 +69,5 @@ class sign {
     rect(x, y, w, h);
     fill(textcol);
     text(text, x, y + textpos);
-    
-    
   }
 }
