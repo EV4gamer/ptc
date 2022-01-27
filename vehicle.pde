@@ -104,7 +104,7 @@ class vehicle {
     rectMode(CENTER);
     rect(pos.x, pos.y - h/2, w, h, w/8, w/8, w/12, w/12);
         
-    stroke(255);
+    stroke(white);
     strokeWeight(5);
     line(pos.x, pos.y - h - 5, pos.x + boreLength * cos(angle), pos.y - h - 5 - boreLength * sin(angle));
         
