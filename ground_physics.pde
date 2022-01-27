@@ -19,6 +19,11 @@ int physPerFrame;
 int shotsPerLaunch;
 int currentShots;
 
+final int darkgrey = qrgb(20);
+final int grey = qrgb(50);
+final int white = qrgb(255);
+final int black = qrgb(0);
+
 void setup() {
   continuePhysics = true;
   currentScene = "Intro Scene";
@@ -88,9 +93,10 @@ void draw() {
     //update shells
     for (int j = 0; j < physPerFrame; j++) {
       for (int i = 0; i < inflictors.size(); i++) {
-        inflictors.get(i).applyForce(new PVector(0, 1));
-        inflictors.get(i).update(1.0 / physPerFrame);
-        inflictors.get(i).render();
+        inflictor inf = inflictors.get(i);
+        inf.applyForce(new PVector(0, 1));
+        inf.update(1.0 / physPerFrame);
+        inf.render();
       }
     }
 
@@ -110,14 +116,14 @@ void draw() {
     signs.get(4).text = "Moves\n"+str(vehicles.get(currentPlayerIndex).movesLeft);    
     if (buttons.get(5).pressed == true) {
       rectMode(CENTER);
-      fill(50);
-      stroke(0);
+      fill(grey);
+      stroke(black);
       rect(buttons.get(5).x, buttons.get(5).y - 50 - 2 * buttons.get(5).h, buttons.get(5).w, 5 * buttons.get(5).h);
       if (vehicles.get(currentPlayerIndex).inflictorsLeft.size() > 0) {
         for (int i = 0; i < vehicles.get(currentPlayerIndex).inflictorsLeft.size(); i++) {
           textSize(30);
           textAlign(CENTER);
-          fill(255);
+          fill(white);
           if (i < 7) {
             text(vehicles.get(currentPlayerIndex).inflictorsLeft.get(i), buttons.get(5).x, buttons.get(5).y - 50 - 4 * buttons.get(5).h + i * 40);
           }
@@ -202,7 +208,7 @@ void draw() {
     background(20);
     textAlign(CENTER);
     textSize(100);
-    fill(255);
+    fill(white);
     text("Pocket Tanks", width / 2, height / 4);
     textSize(7);    
     text("Don't sue me", width / 2, height / 4 + 30);
@@ -217,7 +223,7 @@ void draw() {
     //inflictor selection screen
     background(20);    
     rectMode(CENTER);
-    fill(50);
+    fill(grey);
     stroke(player_one.col);
     rect(width / 5, height / 2, width / 4 - 50, height / 2);
     stroke(player_two.col);
@@ -232,11 +238,11 @@ void draw() {
     fill(vehicles.get(1).col);
     text("Player 2", 4 * width / 5, height / 2 - width / 4 + 150);
     
-    stroke(255);
-    fill(255);
+    stroke(white);
+    fill(white);
     rect((7 + 6 * currentPlayerIndex) * width / 20, height / 2, 50, 50); //selector indicator;
 
-    fill(255);
+    fill(white);
     textSize(32);
     for (int i = 0; i < leftForSelection.size(); i++) {
       text(leftForSelection.get(i), width/2, height / 4 + 50 + i * 40);
@@ -271,12 +277,12 @@ void draw() {
       vehicles.get(i).render();
     }
 
-    stroke(0);
-    fill(50);
+    stroke(black);
+    fill(grey);
     rectMode(CENTER);
     rect(width/2, height/2, width/2, height/2);
     textSize(100);
-    fill(255);
+    fill(white);
     textAlign(CENTER);
     text("End of the game", width/2, height/2);
   }  
@@ -438,7 +444,6 @@ void mouseReleased() {
   for (int i = 0; i < buttons.size(); i++) {
     if (buttons.get(i).isSwitch == false) {
       buttons.get(i).pressed = false;
-      buttons.get(i).longPress = false;
     }
   }
 }
