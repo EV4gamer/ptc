@@ -8,7 +8,7 @@ void display() {
       int colour;
       switch(type) {
       case 0:
-        colour = qrgb(20, 20, 20); //void
+        colour = darkgrey; //void
         break;
       case 1:
       case 2:
@@ -20,10 +20,10 @@ void display() {
         colour = qrgb(101, 67, 33); //dirt brown
         break;
       case 100:
-        colour = qrgb(50, 50, 50); //button area
+        colour = grey; //button area
         break;
       default:
-        colour = qrgb(255, 255, 255);
+        colour = white;
         break;
       }
       pixels[x + y * width] = colour;
@@ -35,6 +35,10 @@ void display() {
 //fast color()
 int qrgb(int r, int g, int b) {
   return -(1 << 24) + (r << 16) + (g << 8) + b;
+}
+
+int qrgb(int c) {
+  return -(1 << 24) + (c << 16) + (c << 8) + c;
 }
 
 //2D random terrain generation
@@ -137,22 +141,22 @@ void addInflictor(String type) {//, float angle) {
   switch(type) {
   case "single shot":
     shotsPerLaunch = 1;
-    inflictors.add(new inflictor(new PVector(x, y), new PVector(cos(vehicles.get(currentPlayerIndex).angle), sin(-vehicles.get(currentPlayerIndex).angle)).mult(p).div(10), 10, 10, 10, color(255), 100, 0, 10, 10));
+    inflictors.add(new inflictor(new PVector(x, y), new PVector(cos(vehicles.get(currentPlayerIndex).angle), sin(-vehicles.get(currentPlayerIndex).angle)).mult(p).div(10), 10, 10, 10, white, 100, 0, 10, 10));
     break;
   case "big shot":
     shotsPerLaunch = 1;
-    inflictors.add(new inflictor(new PVector(x, y), new PVector(cos(vehicles.get(currentPlayerIndex).angle), sin(-vehicles.get(currentPlayerIndex).angle)).mult(p).div(10), 1, 10, 50, color(255), 100, 0, 20, 10));
+    inflictors.add(new inflictor(new PVector(x, y), new PVector(cos(vehicles.get(currentPlayerIndex).angle), sin(-vehicles.get(currentPlayerIndex).angle)).mult(p).div(10), 1, 10, 50, white, 100, 0, 20, 10));
     break;
   case "3 shot":
     shotsPerLaunch = 3;
     for (int i = 0; i < 3; i++) {
-      inflictors.add(new inflictor(new PVector(x, y), new PVector(cos(vehicles.get(currentPlayerIndex).angle + (i-1) * 5 * deg), sin(-(vehicles.get(currentPlayerIndex).angle + (i-1) * 5 * deg))).mult(p).div(10), 9, 9, 9, color(255), 100, 0, 10, 10));
+      inflictors.add(new inflictor(new PVector(x, y), new PVector(cos(vehicles.get(currentPlayerIndex).angle + (i-1) * 5 * deg), sin(-(vehicles.get(currentPlayerIndex).angle + (i-1) * 5 * deg))).mult(p).div(10), 9, 9, 9, white, 100, 0, 10, 10));
     }
     break;
   case "5 shot":
     shotsPerLaunch = 5;
     for (int i = 0; i < 5; i++) {
-      inflictors.add(new inflictor(new PVector(x, y), new PVector(cos(vehicles.get(currentPlayerIndex).angle + (i-2) * 4 * deg), sin(-(vehicles.get(currentPlayerIndex).angle + (i-2) * 4 * deg))).mult(p).div(10), 9, 9, 9, color(255), 100, 0, 10, 10));
+      inflictors.add(new inflictor(new PVector(x, y), new PVector(cos(vehicles.get(currentPlayerIndex).angle + (i-2) * 4 * deg), sin(-(vehicles.get(currentPlayerIndex).angle + (i-2) * 4 * deg))).mult(p).div(10), 9, 9, 9, white, 100, 0, 10, 10));
     }
     break;
   case "sniper":
@@ -190,53 +194,25 @@ int getDamage(boolean aoe, String type) {
   int damage = 0;
   switch(type) {
   case "single shot":
-    if (aoe) {
-      damage = 10;
-    } else {
-      damage = 10;
-    }
+    damage = 10;
     break;
   case "big shot":
-    if (aoe) {
-      damage = 10;
-    } else {
-      damage = 20;
-    }
+    damage = (aoe ? 10 : 20);
     break;
   case "3 shot":
-    if (aoe) {
-      damage = 10;
-    } else {
-      damage = 10;
-    }
+    damage = 10;
     break;
   case "5 shot":
-    if (aoe) {
-      damage = 10;
-    } else {
-      damage = 10;
-    }
+    damage = 10;
     break;
   case "sniper":
-    if (aoe) {
-      damage = 0;
-    } else {
-      damage = 100;
-    }
+    damage = (aoe ? 0 : 100);
     break;
   case "dirtball":
-    if (aoe) {
-      damage = 0;
-    } else {
-      damage = 10;
-    }
+    damage = (aoe ? 0 : 10);
     break;
   case "tommy gun":
-    if (aoe) {
-      damage = 0;
-    } else {
-      damage = 5;
-    }
+    damage = (aoe ? 0 : 5);
     break;
   }
   return damage;
@@ -254,7 +230,7 @@ void drawVehicle(int x, int y, float angle, color col, float rot, float scale) {
   fill(col);
   rectMode(CENTER);
   rect(0, - h/2, w, h, w/8, w/8, w/12, w/12);        
-  stroke(255);
+  stroke(white);
   strokeWeight(5 * scale);
   line(0, -h - 5, boreLength * cos(angle), -h - 5 - boreLength * sin(angle));        
   fill(col);
@@ -263,44 +239,44 @@ void drawVehicle(int x, int y, float angle, color col, float rot, float scale) {
   fill(col + qrgb(30, 30, 30));
   noStroke();
   for (int i = 0; i < w / wheelw - 1; i++) {
-    ellipse(-3 * w / 8 + (i + 1.0/2.0) * wheelw, 0, wheelw, wheelw);
+    circle(-3 * w / 8 + (i + 1.0/2.0) * wheelw, 0, wheelw);
   }
-  ellipse(-w / 2 + wheelw/4, 0, wheelw/2, wheelw/2);
-  ellipse(w / 2 - wheelw/4, 0, wheelw/2, wheelw/2);
+  circle(-w / 2 + wheelw/4, 0, wheelw/2);
+  circle(w / 2 - wheelw/4, 0, wheelw/2);
   rotate(-rot);
   translate(-x, -y);
 }
 
 void initializeGameButtons() {
-  buttons.add(new button(width / 2, height - buttonHeight / 2, 250, 125, qrgb(255, 140, 20), qrgb(20, 20, 20), "Fire", 50, 20));
-  buttons.add(new button(6 * width / 8, height - buttonHeight / 2 + 30, 50, 50, qrgb(255, 255, 255), qrgb(20, 20, 20), "+", 50, 13));
-  buttons.add(new button(6 * width / 8 + 60, height - buttonHeight / 2 + 30, 50, 50, qrgb(255, 255, 255), qrgb(20, 20, 20), "-", 50, 13));
+  buttons.add(new button(width / 2, height - buttonHeight / 2, 250, 125, qrgb(255, 140, 20), darkgrey, "Fire", 50, 20));
+  buttons.add(new button(6 * width / 8, height - buttonHeight / 2 + 30, 50, 50, white, darkgrey, "+", 50, 13));
+  buttons.add(new button(6 * width / 8 + 60, height - buttonHeight / 2 + 30, 50, 50, white, darkgrey, "-", 50, 13));
 
-  buttons.add(new button(7 * width / 8, height - buttonHeight / 2 + 30, 50, 50, qrgb(255, 255, 255), qrgb(20, 20, 20), "+", 50, 13));
-  buttons.add(new button(7 * width / 8 + 60, height - buttonHeight / 2 + 30, 50, 50, qrgb(255, 255, 255), qrgb(20, 20, 20), "-", 50, 13));
+  buttons.add(new button(7 * width / 8, height - buttonHeight / 2 + 30, 50, 50, white, darkgrey, "+", 50, 13));
+  buttons.add(new button(7 * width / 8 + 60, height - buttonHeight / 2 + 30, 50, 50, white, darkgrey, "-", 50, 13));
 
-  buttons.add(new button(width / 4 + 50, height - buttonHeight / 2, 250, 60, qrgb(255, 255, 255), qrgb(20, 20, 20), "Select", 45, 12));
+  buttons.add(new button(width / 4 + 50, height - buttonHeight / 2, 250, 60, white, darkgrey, "Select", 45, 12));
   buttons.get(5).isSwitch = true;
 
-  signs.add(new sign(100, 40, 200, 50, qrgb(20, 20, 20), "Player 1", 50, 15, vehicles.get(0).col));
-  signs.add(new sign(width - 100, 40, 200, 50, qrgb(20, 20, 20), "Player 2", 50, 15, vehicles.get(1).col));
+  signs.add(new sign(100, 40, 200, 50, darkgrey, "Player 1", 50, 15, vehicles.get(0).col));
+  signs.add(new sign(width - 100, 40, 200, 50, darkgrey, "Player 2", 50, 15, vehicles.get(1).col));
 
-  signs.add(new sign(50, 100, 200, 50, qrgb(20, 20, 20), "0", 50, 15, vehicles.get(0).col));
-  signs.add(new sign(width - 50, 100, 200, 50, qrgb(20, 20, 20), "0", 50, 15, vehicles.get(1).col));
+  signs.add(new sign(50, 100, 200, 50, darkgrey, "0", 50, 15, vehicles.get(0).col));
+  signs.add(new sign(width - 50, 100, 200, 50, darkgrey, "0", 50, 15, vehicles.get(1).col));
 
-  signs.add(new sign(width / 8, height - buttonHeight / 2, 50, 50, qrgb(20, 20, 20), "Moves\n5", 30, -37, qrgb(255, 255, 255)));
-  signs.add(new sign(6 * width / 8 + 30, height - buttonHeight / 2 - 40, 0, 0, qrgb(50, 50, 50), "Angle", 30, 0, qrgb(255, 255, 255)));
-  signs.add(new sign(7 * width / 8 + 30, height - buttonHeight / 2 - 40, 0, 0, qrgb(50, 50, 50), "Power", 30, 0, qrgb(255, 255, 255)));
-  signs.add(new sign(6 * width / 8 + 30, height - buttonHeight / 2 - 17, 114, 30, qrgb(20, 20, 20), "0", 30, 11, qrgb(255, 255, 255)));
-  signs.add(new sign(7 * width / 8 + 30, height - buttonHeight / 2 - 17, 114, 30, qrgb(20, 20, 20), "50", 30, 11, qrgb(255, 255, 255)));
+  signs.add(new sign(width / 8, height - buttonHeight / 2, 50, 50, darkgrey, "Moves\n5", 30, -37, white));
+  signs.add(new sign(6 * width / 8 + 30, height - buttonHeight / 2 - 40, 0, 0, grey, "Angle", 30, 0, white));
+  signs.add(new sign(7 * width / 8 + 30, height - buttonHeight / 2 - 40, 0, 0, grey, "Power", 30, 0, white));
+  signs.add(new sign(6 * width / 8 + 30, height - buttonHeight / 2 - 17, 114, 30, darkgrey, "0", 30, 11, white));
+  signs.add(new sign(7 * width / 8 + 30, height - buttonHeight / 2 - 17, 114, 30, darkgrey, "50", 30, 11, white));
 
   signs.add(new sign(250, 35, 20, 20, color(255), " ", 1, 0, qrgb(0, 0, 0))); //active player marker
 }
 
 void initializeIntroButtons() {
-  buttons.add(new button(width / 2, height/2, 250, 125, qrgb(255, 255, 255), qrgb(20, 20, 20), "Play", 50, 20));
-  buttons.add(new button(width / 2, height/2 + 140, 250, 125, qrgb(255, 255, 255), qrgb(20, 20, 20), "Settings", 50, 20));
-  buttons.add(new button(width / 2, height/2 + 280, 250, 125, qrgb(255, 255, 255), qrgb(20, 20, 20), "Quit", 50, 20));
+  buttons.add(new button(width / 2, height/2, 250, 125, white, darkgrey, "Play", 50, 20));
+  buttons.add(new button(width / 2, height/2 + 140, 250, 125, white, darkgrey, "Settings", 50, 20));
+  buttons.add(new button(width / 2, height/2 + 280, 250, 125, white, darkgrey, "Quit", 50, 20));
   for (int i = 0; i < buttons.size(); i++) {
     buttons.get(i).stroke = false;
   }
@@ -310,8 +286,8 @@ void initializeInflictorSelectionButtons() {
 }
 
 void initializeEndOfGameButtons() {
-  buttons.add(new button(width / 2 - 150, height/2 + 100, 250, 125, qrgb(255, 255, 255), qrgb(20, 20, 20), "Restart", 50, 20));
-  buttons.add(new button(width / 2 + 150, height/2 + 100, 250, 125, qrgb(255, 255, 255), qrgb(20, 20, 20), "Quit", 50, 20));
+  buttons.add(new button(width / 2 - 150, height/2 + 100, 250, 125, white, darkgrey, "Restart", 50, 20));
+  buttons.add(new button(width / 2 + 150, height/2 + 100, 250, 125, white, darkgrey, "Quit", 50, 20));
 }
 
 
