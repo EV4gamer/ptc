@@ -2,17 +2,16 @@
 class button {
   int x, y, w, h;
   boolean pressed;
-  boolean longPress;
   boolean show = true;
-  color buttoncol;
-  color textcol;
+  int buttoncol;
+  int textcol;
   String text;
   int textSize;
   int textpos;
   boolean stroke = true;
   boolean isSwitch = false;
 
-  button(int x1, int y1, int w1, int h1, color tc, color bc, String t, int ts, int ty) {
+  button(int x1, int y1, int w1, int h1, int tc, int bc, String t, int ts, int ty) {
     x = x1;
     y = y1;
     w = w1;
@@ -23,15 +22,14 @@ class button {
     textSize = ts;
     textpos = ty;
     pressed = false;
-    longPress = false;
   }
 
   void render() {
     rectMode(CENTER);
     if (stroke == true) {
-      stroke(0);
+      stroke(black);
     }
-    fill(pressed ? limit(buttoncol + 20, 0, 255) : buttoncol);
+    fill(pressed ? buttoncol - darkgrey : buttoncol);
     rect(x, y, w, h);
     fill(textcol);
     textSize(textSize);
